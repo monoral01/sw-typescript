@@ -15,7 +15,7 @@ const App: FC<{}> = () => {
     let url;
     if (!query) {
       url = `https://swapi.dev/api/people/?page=${number}`;
-    } else url = `https://swapi.dev/api/people/search=${query}`;
+    } else url = `https://swapi.dev/api/people/?search=${query}`;
     await fetch(url)
       .then((res) => {
         return res.json();
