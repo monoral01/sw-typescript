@@ -1,11 +1,11 @@
 .app {
   display: flex;
-  width: auto;
+  flex-direction: column;
   margin-top: 100px;
+  align-items: center;
 }
 .pages_bar {
   margin-top: 10px;
-  width: 100%;
 }
 .page {
   padding: 15px;

@@ -40,7 +40,7 @@ const App: FC<{}> = () => {
           className={cl.input}
           placeholder="Поиск по имени"
           onChange={(event) => setFilterQuery(event.target.value)}
-        ></input>
+        />
       </div>
       <PeopleList peoples={peoples} />
       <div className={cl.pages_bar}>
