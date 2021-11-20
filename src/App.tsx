@@ -3,86 +3,58 @@ import Header from './components/header/Header';
 import PeopleList from './components/list/PeopleList';
 import styles from './components/styles/App.module.css';
 import { People } from './components/types/types';
+import { fetchData } from './components/API/PostService';
+const postPerPage = 10;
+const initialPageNumber = 1;
 
-const App: FC = () => {
+export const App: FC = () => {
   const [peoples, setPeoples] = useState<People[]>([]);
-  const [queryValue, setQueryValue] = useState('');
-  const [totalPages, setTotalPages] = useState(1);
-  const limit = 10;
-  const page = 1;
+  const [inputValue, setInputValue] = useState('');
+  const [totalPages, setTotalPages] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  // const pageNumbers = [...Array(totalPages)].map((v, i = 1) => i + 1);
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
-  const getURL = (pageNumber: number, query?: string) => {
-    const baseURL = new URL('https://swapi.dev/api/people/');
-    if (!query) {
-      baseURL.searchParams.set('page', String(pageNumber));
-      console.log('if query is not append', query, baseURL);
-    } else {
-      baseURL.searchParams.set('search', query);
-      baseURL.searchParams.set('page', String(pageNumber));
-      console.log('if query is append', query, baseURL);
-    }
-    return String(baseURL);
-  };
-
-  const fetchPeopleData = async (pageNumber: number, query?: string) => {
-    const url = getURL(pageNumber, query);
-    await fetch(url)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setTotalPages(Math.ceil(data.count / limit));
-        setPeoples(data.results);
-      });
-  };
 
   const setFilterQuery = (pageNumber: number, query: string) => {
-    fetchPeopleData(pageNumber, query);
-    setQueryValue(query);
+    fetchData(pageNumber, query).then((data) => {
+      const pagesCountOnRender = Math.ceil(data.count / postPerPage);
+      setTotalPages(pagesCountOnRender);
+      setPeoples(data.results);
+    });
+    setInputValue(query);
   };
 
   useEffect(() => {
-    fetchPeopleData(page);
+    setFilterQuery(initialPageNumber, '');
   }, []);
 
   return (
     <div className={styles.app}>
       <Header />
-
       <div className={styles.search}>
         <input
           className={styles.input}
           placeholder="Поиск по имени"
-          onChange={(event) => setFilterQuery(page, event.target.value)}
+          onChange={(event) =>
+            setFilterQuery(initialPageNumber, event.target.value)
+          }
         />
       </div>
-
       <PeopleList peoples={peoples} />
-
       <div className={styles.pages_bar}>
-        {pageNumbers.map((number) => (
+        {new Array(totalPages).fill(0).map((_, pageNumber) => (
           <span
             onClick={() => {
-              setCurrentPage(number);
-              setFilterQuery(number, queryValue);
-              console.log(page);
+              setCurrentPage(pageNumber + 1);
+              setFilterQuery(pageNumber + 1, inputValue);
             }}
-            key={number}
+            key={pageNumber + 1}
             className={
-              currentPage === number ? styles.page_current : styles.page
+              currentPage === pageNumber + 1 ? styles.page_current : styles.page
             }
           >
-            {number}
+            {pageNumber + 1}
           </span>
         ))}
       </div>
     </div>
   );
 };
-
-export default App;
