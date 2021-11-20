@@ -1,26 +1,26 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { IPeople } from '../../../types/types';
-import cl from './PeopleList.module.css';
+import { People } from '../../../types/types';
+import styles from './PeopleList.module.css';
 interface PeopleListProps {
-  peoples: IPeople[];
+  peoples: People[];
 }
 const PeopleList: FC<PeopleListProps> = ({ peoples }) => {
   return (
-    <div className={cl.table}>
+    <div className={styles.table}>
       <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Имя</TableCell>
               <TableCell align="center">Пол</TableCell>
-              <TableCell align="center">Вес&nbsp;</TableCell>
-              <TableCell align="center">Цвет глаз&nbsp;</TableCell>
+              <TableCell align="center">Вес</TableCell>
+              <TableCell align="center">Цвет глаз</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

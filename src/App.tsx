@@ -1,57 +1,81 @@
-import React, { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect } from 'react';
 import Header from './components/UI/header/Header';
 import PeopleList from './components/UI/list/PeopleList';
-import cl from './styles/App.module.css';
-import { IPeople } from './types/types';
-const App: FC<{}> = () => {
-  const [peoples, setPeoples] = useState<IPeople[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const [value, setValue] = useState<string>('');
+import styles from './styles/App.module.css';
+import { People } from './types/types';
+
+const App: FC = () => {
+  const [peoples, setPeoples] = useState<People[]>([]);
+  const [queryValue, setQueryValue] = useState('');
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10;
+  const page = 1;
+  const [currentPage, setCurrentPage] = useState(1);
+  // const pageNumbers = [...Array(totalPages)].map((v, i = 1) => i + 1);
   const pageNumbers = [];
-  for (let i = 1; i <= 9; i += 1) {
+  for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
-  const fetchPeople = async (number: number, query?: string) => {
-    let url;
+  const getURL = (pageNumber: number, query?: string) => {
+    const baseURL = new URL('https://swapi.dev/api/people/');
     if (!query) {
-      url = `https://swapi.dev/api/people/?page=${number}`;
-    } else url = `https://swapi.dev/api/people/?search=${query}`;
+      baseURL.searchParams.set('page', String(pageNumber));
+      console.log('if query is not append', query, baseURL);
+    } else {
+      baseURL.searchParams.set('search', query);
+      baseURL.searchParams.set('page', String(pageNumber));
+      console.log('if query is append', query, baseURL);
+    }
+    return String(baseURL);
+  };
+
+  const fetchPeopleData = async (pageNumber: number, query?: string) => {
+    const url = getURL(pageNumber, query);
     await fetch(url)
       .then((res) => {
         return res.json();
       })
       .then((data) => {
+        setTotalPages(Math.ceil(data.count / limit));
         setPeoples(data.results);
       });
   };
-  const setFilterQuery = (query: string) => {
-    console.log(query);
-    setValue(query);
-    fetchPeople(page, query);
+
+  const setFilterQuery = (pageNumber: number, query: string) => {
+    fetchPeopleData(pageNumber, query);
+    setQueryValue(query);
   };
+
   useEffect(() => {
-    fetchPeople(page);
+    fetchPeopleData(page);
   }, []);
+
   return (
-    <div className={cl.app}>
+    <div className={styles.app}>
       <Header />
-      <div className={cl.search}>
+
+      <div className={styles.search}>
         <input
-          className={cl.input}
+          className={styles.input}
           placeholder="Поиск по имени"
-          onChange={(event) => setFilterQuery(event.target.value)}
+          onChange={(event) => setFilterQuery(page, event.target.value)}
         />
       </div>
+
       <PeopleList peoples={peoples} />
-      <div className={cl.pages_bar}>
+
+      <div className={styles.pages_bar}>
         {pageNumbers.map((number) => (
           <span
             onClick={() => {
-              fetchPeople(number, value);
-              return setPage(number);
+              setCurrentPage(number);
+              setFilterQuery(number, queryValue);
+              console.log(page);
             }}
             key={number}
-            className={page === number ? cl.page_current : cl.page}
+            className={
+              currentPage === number ? styles.page_current : styles.page
+            }
           >
             {number}
           </span>

@@ -1,4 +1,4 @@
-export interface IPeople {
+export interface People {
   name: string;
   gender: string;
   mass: number;
