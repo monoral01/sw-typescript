@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from 'react';
 import Header from './components/header/Header';
 import PeopleList from './components/list/PeopleList';
-import styles from './styles/App.module.css';
+import styles from './components/styles/App.module.css';
 import { People } from './components/types/types';
 
 const App: FC = () => {
