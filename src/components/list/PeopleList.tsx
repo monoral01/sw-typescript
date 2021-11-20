@@ -5,7 +5,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { People } from '../../../types/types';
+import { People } from '../types/types';
 import styles from './PeopleList.module.css';
 interface PeopleListProps {
   peoples: People[];
