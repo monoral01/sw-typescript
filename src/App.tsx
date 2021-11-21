@@ -40,20 +40,23 @@ export const App: FC = () => {
       </div>
       <PeopleList peoples={peoples} />
       <div className={styles.pages_bar}>
-        {new Array(totalPages).fill(0).map((_, pageNumber) => (
-          <span
-            onClick={() => {
-              setCurrentPage(pageNumber + 1);
-              setFilterQuery(pageNumber + 1, inputValue);
-            }}
-            key={pageNumber + 1}
-            className={
-              currentPage === pageNumber + 1 ? styles.page_current : styles.page
-            }
-          >
-            {pageNumber + 1}
-          </span>
-        ))}
+        {new Array(totalPages).fill(0).map((_, pageNumber) => {
+          pageNumber += 1;
+          return (
+            <span
+              onClick={() => {
+                setCurrentPage(pageNumber);
+                setFilterQuery(pageNumber, inputValue);
+              }}
+              key={pageNumber}
+              className={
+                currentPage === pageNumber ? styles.page_current : styles.page
+              }
+            >
+              {pageNumber}
+            </span>
+          );
+        })}
       </div>
     </div>
   );
